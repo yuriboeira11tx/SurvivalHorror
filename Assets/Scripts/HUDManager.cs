@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem.Controls;
 using UnityEngine.UI;
 
 public class HUDManager : MonoBehaviour {
@@ -6,6 +7,9 @@ public class HUDManager : MonoBehaviour {
 
     public Slider staminaSlider;
     public Image staminaColor;
+    public GameObject pressE;
+    public Text papperCount;
+    private int pappers;
 
     private void Awake() {
         if (Instance != null && Instance == this) {
@@ -22,6 +26,14 @@ public class HUDManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        UpdatePapperCount();
+    }
 
+    private void UpdatePapperCount() {
+        papperCount.text = pappers.ToString() + "/" + "5";
+    }
+
+    public void AddPapper() {
+        pappers++;
     }
 }
