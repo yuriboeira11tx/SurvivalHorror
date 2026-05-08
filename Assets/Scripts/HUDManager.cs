@@ -34,6 +34,7 @@ public class HUDManager : MonoBehaviour {
 
         if (Mouse.current.leftButton.wasPressedThisFrame && gameOverObj.activeSelf) {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            Cursor.visible = false;
         }
     }
 

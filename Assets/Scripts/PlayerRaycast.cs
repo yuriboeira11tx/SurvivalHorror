@@ -2,31 +2,53 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerRaycast : MonoBehaviour {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start() {
+    private bool olhandoParaPapel = false;
 
-    }
-
-    // Update is called once per frame
     void Update() {
-        Vector3 direcao = transform.TransformDirection(Vector3.forward);
+        Vector3 direcao = transform.forward;
+
         Debug.DrawRay(transform.position, direcao * 8f, Color.red);
 
-        bool isHit = Physics.Raycast(transform.position, direcao, out RaycastHit hitInfo, 8f);
-        if (isHit) {
-            GameObject papelObj = hitInfo.collider.gameObject;
-            if (papelObj.tag == "Papel") {
-                HUDManager.Instance.pressE.SetActive(true);
+        bool achouPapel = false;
+        GameObject papelObj = null;
 
-                if (Keyboard.current.eKey.wasPressedThisFrame) {
-                    Debug.Log("press: " + HUDManager.Instance.pressE.activeSelf);
-                    
-                    HUDManager.Instance.AddPapper();
-                    Destroy(papelObj);
-                }
-            } else {
-                HUDManager.Instance.pressE.SetActive(false);
+        bool isHit = Physics.Raycast(
+            transform.position,
+            direcao,
+            out RaycastHit hitInfo,
+            8f,
+            ~0,
+            QueryTriggerInteraction.Collide
+        );
+
+        if (isHit) {
+            GameObject objetoAcertado = hitInfo.collider.gameObject;
+
+            if (objetoAcertado.CompareTag("Papel")) {
+                achouPapel = true;
+                papelObj = objetoAcertado;
             }
+        }
+
+        AtualizarUIInteracao(achouPapel);
+
+        if (achouPapel && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame) {
+            HUDManager.Instance.AddPapper();
+            Destroy(papelObj);
+
+            AtualizarUIInteracao(false);
+        }
+    }
+
+    void AtualizarUIInteracao(bool ativo) {
+        if (olhandoParaPapel == ativo) {
+            return;
+        }
+
+        olhandoParaPapel = ativo;
+
+        if (HUDManager.Instance != null && HUDManager.Instance.pressE != null) {
+            HUDManager.Instance.pressE.SetActive(ativo);
         }
     }
 }
