@@ -1,5 +1,7 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class HUDManager : MonoBehaviour {
@@ -9,6 +11,7 @@ public class HUDManager : MonoBehaviour {
     public Image staminaColor;
     public GameObject pressE;
     public GameObject monsterObj;
+    public GameObject gameOverObj;
     public Text papperCount;
     private int pappers;
 
@@ -28,6 +31,10 @@ public class HUDManager : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         UpdatePapperCount();
+
+        if (Mouse.current.leftButton.wasPressedThisFrame && gameOverObj.activeSelf) {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
 
     private void UpdatePapperCount() {
