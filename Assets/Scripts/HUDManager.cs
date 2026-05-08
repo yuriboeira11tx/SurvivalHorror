@@ -8,6 +8,7 @@ public class HUDManager : MonoBehaviour {
     public Slider staminaSlider;
     public Image staminaColor;
     public GameObject pressE;
+    public GameObject monsterObj;
     public Text papperCount;
     private int pappers;
 
@@ -35,5 +36,10 @@ public class HUDManager : MonoBehaviour {
 
     public void AddPapper() {
         pappers++;
+        monsterObj.SetActive(true);
+
+        if (pappers == 5) {
+            monsterObj.SetActive(false);
+        }
     }
 }
