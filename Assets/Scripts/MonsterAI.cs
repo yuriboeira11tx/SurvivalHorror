@@ -34,8 +34,10 @@ public class MonsterIA : MonoBehaviour {
     void Update() {
         if (playerObj != null && agent != null) {
             agent.destination = playerObj.transform.position;
-            agent.speed = 
         }
+
+        Vector3 direction = transform.forward;
+        Debug.DrawRay(transform.position, direction * 8f, Color.red);
 
         TocarPassos();
     }
