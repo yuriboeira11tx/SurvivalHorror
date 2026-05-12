@@ -34,6 +34,7 @@ public class MonsterIA : MonoBehaviour {
     void Update() {
         if (playerObj != null && agent != null) {
             agent.destination = playerObj.transform.position;
+            agent.speed = 
         }
 
         TocarPassos();

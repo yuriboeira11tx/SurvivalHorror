@@ -159,7 +159,7 @@ namespace StarterAssets {
 
 					if (staminaNow >= 20) {
 						canRun = true;
-						HUDManager.Instance.staminaColor.color = Color.Lerp(HUDManager.Instance.staminaColor.color, Color.yellow, Time.deltaTime * 2);
+						HUDManager.Instance.staminaColor.color = Color.Lerp(HUDManager.Instance.staminaColor.color, Color.white, Time.deltaTime * 2);
 					}
 				}
 			}
