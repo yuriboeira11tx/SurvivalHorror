@@ -1,45 +1,24 @@
 using StarterAssets;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 public class MonsterIA : MonoBehaviour {
+    public enum MonsterStates { Idle, Patrol, Chase }
+    private MonsterStates monsterState = MonsterStates.Patrol;
+
     public GameObject playerObj;
     public GameObject gameOverObj;
     public GameObject gameOverUIObj;
-
-    [Header("Sons de passos")]
-    public AudioSource audioSource;
-    public AudioClip[] sonsDePassos;
-    public float intervaloPassos = 2.9f;
-    public float velocidadeMinimaParaPasso = 0.9f;
-
-    private float tempoProximoPasso;
-    private Vector3 ultimaPosicao;
-    private NavMeshAgent agent;
+    public NavMeshAgent agent;
+    public Transform centrePoint;
 
     void Start() {
-        ultimaPosicao = transform.position;
-
         agent = GetComponent<NavMeshAgent>();
-
-        if (audioSource == null) {
-            audioSource = GetComponent<AudioSource>();
-        }
-
         playerObj = GameObject.FindGameObjectWithTag("Player");
     }
 
     void Update() {
-        if (playerObj != null && agent != null) {
-            agent.destination = playerObj.transform.position;
-        }
-
-        Vector3 direction = transform.forward;
-        Debug.DrawRay(transform.position, direction * 8f, Color.red);
-
-        TocarPassos();
+        UpdateState();
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -64,21 +43,24 @@ public class MonsterIA : MonoBehaviour {
         }
     }
 
-    void TocarPassos() {
-        float velocidadeAtual = Vector3.Distance(transform.position, ultimaPosicao) / Time.deltaTime;
-
-        if (velocidadeAtual > velocidadeMinimaParaPasso) {
-            if (Time.time >= tempoProximoPasso) {
-                if (audioSource != null && sonsDePassos != null && sonsDePassos.Length > 0) {
-                    AudioClip somEscolhido = sonsDePassos[Random.Range(0, sonsDePassos.Length)];
-                    Debug.Log("som");
-                    audioSource.PlayOneShot(somEscolhido);
-
-                    tempoProximoPasso = Time.time + intervaloPassos;
-                }
-            }
+    bool RandomPoint(Vector3 center, float range, out Vector3 result) {
+        Vector3 randomPoint = center + Random.insideUnitSphere * range;
+        if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 15.0f, NavMesh.AllAreas)) {
+            result = hit.position;
+            return true;
         }
 
-        ultimaPosicao = transform.position;
+        result = Vector3.zero;
+        return false;
+    }
+
+    private void UpdateState() {
+        if (agent.remainingDistance <= agent.stoppingDistance && monsterState == MonsterStates.Patrol) {
+            Vector3 point;
+            if (RandomPoint(centrePoint.position, 30.0f, out point)) {
+                Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f);
+                agent.SetDestination(point);
+            }
+        }
     }
 }
