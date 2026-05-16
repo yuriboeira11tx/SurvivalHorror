@@ -62,5 +62,9 @@ public class MonsterIA : MonoBehaviour {
                 agent.SetDestination(point);
             }
         }
+
+        if (Vector3.Distance(playerObj.transform.position, agent.transform.position) <= 20f) {
+            Debug.LogWarning("perto");
+        }
     }
 }
