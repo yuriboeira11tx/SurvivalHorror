@@ -55,16 +55,27 @@ public class MonsterIA : MonoBehaviour {
     }
 
     private void UpdateState() {
-        if (agent.remainingDistance <= agent.stoppingDistance && monsterState == MonsterStates.Patrol) {
-            Vector3 point;
-            if (RandomPoint(centrePoint.position, 30.0f, out point)) {
-                Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f);
-                agent.SetDestination(point);
-            }
+        if (Vector3.Distance(playerObj.transform.position, agent.transform.position) <= 20f) {
+            Debug.LogWarning("chase");
+            monsterState = MonsterStates.Chase;
+
+            agent.SetDestination(playerObj.transform.position);
+        } else {
+            monsterState = MonsterStates.Patrol;
         }
 
-        if (Vector3.Distance(playerObj.transform.position, agent.transform.position) <= 20f) {
-            Debug.LogWarning("perto");
+        if (monsterState == MonsterStates.Patrol) {
+            agent.speed = 10f;
+
+            if (agent.remainingDistance <= agent.stoppingDistance) {
+                Vector3 point;
+                if (RandomPoint(centrePoint.position, 30.0f, out point)) {
+                    Debug.DrawRay(point, Vector3.up, Color.blue, 1.0f);
+                    agent.SetDestination(point);
+                }
+            }
+        } else if (monsterState == MonsterStates.Chase) {
+            agent.speed = 14f;
         }
     }
 }
